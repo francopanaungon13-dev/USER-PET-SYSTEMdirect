@@ -1,0 +1,42 @@
+<html>
+    <head>
+<script src="shared-storage.js"></script>
+        <title>Happy Paws - My Profile</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header class="topbar">
+            <a class="logo" href="home.html">🐾 Happy Paws</a>
+            <nav>
+                <a href="home.html">Home</a>
+                <a href="pets.html">My Pets</a>
+                <a href="appointments.html">Appointments</a>
+                <a href="index.html" data-logout>Logout</a>
+            </nav>
+        </header>
+
+        <main class="container">
+            <div class="panel">
+                <h1>My Profile</h1>
+                <p>View and update your account information.</p>
+                <form id="profileForm">
+                    <label>Full Name</label>
+                    <input type="text" id="profileName" required>
+
+                    <label>Email Address</label>
+                    <input type="email" id="profileEmail" readonly>
+
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2>Account Settings</h2>
+                <a class="button-link" href="notifications.html">Notifications</a>
+                <button type="button" data-logout>Logout</button>
+            </div>
+        </main>
+<script type="module" src="app.js"></script>
+    </body>
+</html>

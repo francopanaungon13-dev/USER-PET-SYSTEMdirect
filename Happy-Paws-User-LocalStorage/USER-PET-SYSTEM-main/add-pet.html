@@ -1,0 +1,62 @@
+<html>
+    <head>
+<script src="shared-storage.js"></script>
+        <title>Happy Paws - Add Pet</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header class="topbar">
+            <a class="logo" href="home.html">🐾 Happy Paws</a>
+            <nav>
+                <a href="home.html">Home</a>
+                <a href="pets.html">My Pets</a>
+                <a href="appointments.html">Appointments</a>
+            </nav>
+        </header>
+
+        <main class="container">
+            <div class="panel">
+                <h1>Add New Pet</h1>
+                <form id="petForm">
+                    <label>Pet Name</label>
+                    <input type="text" id="petName" required>
+
+                    <label>Pet Type</label>
+                    <select id="petType" required>
+                        <option value="">Select Type</option>
+                        <option>Dog</option>
+                        <option>Cat</option>
+                        <option>Other</option>
+                    </select>
+
+                    <label>Breed</label>
+                    <input type="text" id="petBreed" required>
+
+                    <label>Gender</label>
+                    <select id="petGender" required>
+                        <option value="">Select Gender</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+
+                    <label>Date of Birth</label>
+                    <input type="date" id="petBirth" required>
+
+                    <label>Color</label>
+                    <input type="text" id="petColor">
+
+                    <label>Weight (kg)</label>
+                    <input type="number" id="petWeight" min="0" step="0.1">
+
+                    <label>Medical Notes</label>
+                    <textarea id="petNotes" rows="3"></textarea>
+
+                    <button type="submit">Save Pet</button>
+                    <a class="button-link" href="pets.html">Cancel</a>
+                </form>
+            </div>
+        </main>
+<script type="module" src="app.js"></script>
+    </body>
+</html>
