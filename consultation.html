@@ -1,0 +1,40 @@
+<html>
+    <head>
+<script src="shared-storage.js"></script>
+        <title>Happy Paws - Consultation</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header class="topbar">
+            <a class="logo" href="home.html">🐾 Happy Paws</a>
+            <nav>
+                <a href="home.html">Home</a>
+                <a href="pets.html">My Pets</a>
+                <a href="services.html">Services</a>
+            </nav>
+        </header>
+
+        <main class="container">
+            <div class="panel">
+                <h1>Pet Consultation</h1>
+                <p>Describe your pet's concern to submit a consultation request.</p>
+                <form id="consultationForm">
+                    <label>Pet Name</label>
+                    <input type="text" id="consultPet" required>
+
+                    <label>Describe Your Concern</label>
+                    <textarea id="consultConcern" rows="5" required placeholder="Enter your pet's concern"></textarea>
+
+                    <button type="submit">Submit Consultation</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <h2>My Consultation Requests</h2>
+                <div id="consultationList"></div>
+            </div>
+        </main>
+<script type="module" src="app.js"></script>
+    </body>
+</html>
