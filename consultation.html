@@ -1,40 +1,52 @@
+
 <html>
-    <head>
-<script src="shared-storage.js"></script>
-        <title>Happy Paws - Consultation</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header class="topbar">
-            <a class="logo" href="home.html">🐾 Happy Paws</a>
-            <nav>
-                <a href="home.html">Home</a>
-                <a href="pets.html">My Pets</a>
-                <a href="services.html">Services</a>
-            </nav>
-        </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Happy Paws - Consultation</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="shared-storage.js"></script>
+</head>
+<body>
+    <header class="topbar">
+        <a class="logo" href="home.html">🐾 Happy Paws</a>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="pets.html">My Pets</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="services.html">Services</a>
+            <a href="health-records.html">Health Records</a>
+            <a href="profile.html">Profile</a>
+            <a href="#" data-logout>Logout</a>
+        </nav>
+    </header>
 
-        <main class="container">
-            <div class="panel">
-                <h1>Pet Consultation</h1>
-                <p>Describe your pet's concern to submit a consultation request.</p>
-                <form id="consultationForm">
-                    <label>Pet Name</label>
-                    <input type="text" id="consultPet" required>
+    <main class="container">
+        <div class="panel">
+            <h1>Pet Consultation</h1>
+            <p>Describe your pet's concern to submit a consultation request.</p>
 
-                    <label>Describe Your Concern</label>
-                    <textarea id="consultConcern" rows="5" required placeholder="Enter your pet's concern"></textarea>
+            <form id="consultationForm">
+                <label for="consultPet">Select Your Pet</label>
+                <select id="consultPet" required>
+                    <option value="">Select a pet</option>
+                </select>
 
-                    <button type="submit">Submit Consultation</button>
-                </form>
+                <label for="consultConcern">Describe Your Concern</label>
+                <textarea id="consultConcern" rows="5" required placeholder="Enter your pet's concern"></textarea>
+
+                <button type="submit">Submit Consultation</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <h2>My Consultation Requests</h2>
+            <div id="consultationList">
+                <p>Loading consultations...</p>
             </div>
+        </div>
+    </main>
 
-            <div class="panel">
-                <h2>My Consultation Requests</h2>
-                <div id="consultationList"></div>
-            </div>
-        </main>
-<script type="module" src="app.js"></script>
-    </body>
+    <script src="app.js"></script>
+</body>
 </html>
