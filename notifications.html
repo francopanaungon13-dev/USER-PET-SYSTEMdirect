@@ -1,26 +1,219 @@
+
 <html>
-    <head>
-<script src="shared-storage.js"></script>
-        <title>Happy Paws - Notifications</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header class="topbar">
-            <a class="logo" href="home.html">🐾 Happy Paws</a>
-            <nav>
-                <a href="home.html">Home</a>
-                <a href="appointments.html">Appointments</a>
-                <a href="profile.html">Profile</a>
-            </nav>
-        </header>
+<head>
+    <script src="shared-storage.js"></script>
+    <title>Happy Paws - Notifications</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
 
-        <main class="container">
-            <h1>Notifications</h1>
-            <p>Review your saved appointment requests and updates.</p>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-            <div id="notificationList" class="dashboard-grid"></div>
-        </main>
-<script type="module" src="app.js"></script>
-    </body>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #2d4356;
+            background: linear-gradient(135deg, #eaf5ff, #f8fcff, #e6f7f7);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: #ffffff;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            border-bottom: 3px solid #bde7f5;
+            box-shadow: 0 4px 18px rgba(35, 100, 145, 0.09);
+        }
+
+        .logo {
+            color: #0878cf;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #49657c;
+            font-size: 14px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #0788df;
+        }
+
+        .container {
+            width: min(1100px, 92%);
+            margin: 38px auto;
+        }
+
+        .page-heading {
+            position: relative;
+            overflow: hidden;
+            padding: 30px;
+            margin-bottom: 28px;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #087fd0, #19b5c4);
+            color: white;
+            box-shadow: 0 10px 25px rgba(8, 127, 208, 0.17);
+        }
+
+        .page-heading::after {
+            content: "🔔";
+            position: absolute;
+            right: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 65px;
+            opacity: 0.22;
+        }
+
+        .page-heading h1 {
+            margin: 0 0 12px;
+            font-size: 30px;
+        }
+
+        .page-heading p {
+            max-width: 650px;
+            margin: 0;
+            color: #effaff;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .section-title {
+            color: #0878cf;
+            font-size: 21px;
+            margin: 0 0 18px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        #notificationList .pet-card {
+            background: #ffffff;
+            border: 1px solid #d9eaf5;
+            border-left: 5px solid #19a8cf;
+            border-radius: 16px;
+            padding: 23px;
+            box-shadow: 0 8px 22px rgba(39, 95, 133, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow-wrap: anywhere;
+        }
+
+        #notificationList .pet-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 26px rgba(39, 95, 133, 0.13);
+        }
+
+        #notificationList .pet-card h3 {
+            color: #0878cf;
+            font-size: 18px;
+            margin: 0 0 14px;
+        }
+
+        #notificationList .pet-card p {
+            color: #60778b;
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 9px 0;
+        }
+
+        #notificationList .status {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 7px 13px;
+            border-radius: 20px;
+            background: #fff1cc;
+            color: #946500;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        #notificationList:empty::before {
+            content: "No notifications yet.";
+            display: block;
+            padding: 30px;
+            border: 1px dashed #b9d9ed;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.75);
+            color: #71869a;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 18px 5%;
+            }
+
+            nav {
+                gap: 14px;
+            }
+
+            .container {
+                margin: 24px auto;
+            }
+
+            .page-heading {
+                padding: 24px;
+            }
+
+            .page-heading h1 {
+                font-size: 25px;
+            }
+
+            .page-heading::after {
+                right: 15px;
+                font-size: 45px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="logo" href="home.html">🐾 Happy Paws</a>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="profile.html">Profile</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="page-heading">
+            <h1>🔔 Notifications</h1>
+            <p>Stay updated with your pet's appointment requests and important information from Happy Paws.</p>
+        </section>
+
+        <h2 class="section-title">Your Recent Updates</h2>
+
+        <div id="notificationList" class="dashboard-grid"></div>
+    </main>
+
+    <script type="module" src="app.js"></script>
+</body>
 </html>
