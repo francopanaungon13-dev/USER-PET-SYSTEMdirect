@@ -653,14 +653,15 @@
             });
         });
 
-        const appointmentObserver = new MutationObserver(function () {
-            filterAppointments();
-        });
+       
+const appointmentObserver = new MutationObserver(function () {
+    filterAppointments();
+});
 
-        appointmentObserver.observe(appointmentList, {
-            childList: true,
-            subtree: true
-        });
+appointmentObserver.observe(appointmentList, {
+    childList: true,
+    subtree: false
+});
 
         filterAppointments();
     </script>
