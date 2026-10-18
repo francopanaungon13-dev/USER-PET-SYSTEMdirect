@@ -1,33 +1,224 @@
+
 <html>
-    <head>
-<script src="shared-storage.js"></script>
-        <title>Happy Paws - Health Records</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header class="topbar">
-            <a class="logo" href="home.html">🐾 Happy Paws</a>
-            <nav>
-                <a href="home.html">Home</a>
-                <a href="pets.html">My Pets</a>
-                <a href="appointments.html">Appointments</a>
-            </nav>
-        </header>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Happy Paws - Health Records</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="shared-storage.js"></script>
 
-        <main class="container">
-            <h1>Pet Health Records</h1>
-            <p>Review the health notes saved for your pets.</p>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-            <div id="healthPet" class="dashboard-grid"></div>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: #2d4356;
+            background: linear-gradient(135deg, #eaf5ff, #f8fcff, #e7f7f7);
+            min-height: 100vh;
+        }
 
-            <div class="panel">
-                <h2>Need to update a record?</h2>
-                <p>Open the pet's details and add medical notes when registering a pet.</p>
-                <a class="button-link" href="pets.html">View My Pets</a>
-                <a class="button-link" href="add-pet.html">Add Pet</a>
-            </div>
-        </main>
-<script type="module" src="app.js"></script>
-    </body>
+        .topbar {
+            background: #ffffff;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 18px;
+            border-bottom: 3px solid #bde7f5;
+            box-shadow: 0 4px 18px rgba(35, 100, 145, 0.09);
+        }
+
+        .logo {
+            color: #0878cf;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #49657c;
+            font-size: 14px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: #0788df;
+        }
+
+        .container {
+            width: min(1100px, 92%);
+            margin: 38px auto;
+        }
+
+        .page-heading {
+            margin-bottom: 28px;
+            padding: 30px;
+            border-radius: 20px;
+            background: linear-gradient(120deg, #087fd0, #19b5c4);
+            color: white;
+            box-shadow: 0 10px 25px rgba(8, 127, 208, 0.17);
+        }
+
+        .page-heading h1 {
+            margin: 0 0 12px;
+            font-size: 30px;
+        }
+
+        .page-heading p {
+            margin: 0;
+            color: #effaff;
+            line-height: 1.7;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 22px;
+            margin-bottom: 28px;
+        }
+
+        #healthPet:empty {
+            display: none;
+        }
+
+        #healthPet .pet-card {
+            background: #ffffff;
+            border: 1px solid #d9eaf5;
+            border-top: 4px solid #18a9c9;
+            border-radius: 17px;
+            padding: 23px;
+            box-shadow: 0 8px 22px rgba(39, 95, 133, 0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            overflow-wrap: anywhere;
+        }
+
+        #healthPet .pet-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 26px rgba(39, 95, 133, 0.13);
+        }
+
+        #healthPet .pet-card h3 {
+            color: #0878cf;
+            font-size: 20px;
+            margin: 0 0 16px;
+        }
+
+        #healthPet .pet-card p {
+            color: #60778b;
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 9px 0;
+        }
+
+        .panel {
+            padding: 28px;
+            border: 1px solid #d9eaf5;
+            border-radius: 19px;
+            background: #ffffff;
+            box-shadow: 0 8px 22px rgba(39, 95, 133, 0.08);
+        }
+
+        .panel h2 {
+            margin: 0 0 12px;
+            color: #0878cf;
+            font-size: 22px;
+        }
+
+        .panel p {
+            color: #687d8f;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .button-link {
+            display: inline-block;
+            margin: 12px 10px 0 0;
+            padding: 12px 18px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #0788df, #16b3c2);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 5px 12px rgba(8, 136, 223, 0.16);
+            transition: transform 0.2s;
+        }
+
+        .button-link:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 18px 5%;
+            }
+
+            nav {
+                gap: 13px;
+            }
+
+            .container {
+                margin: 24px auto;
+            }
+
+            .page-heading {
+                padding: 24px;
+            }
+
+            .page-heading h1 {
+                font-size: 25px;
+            }
+
+            .panel {
+                padding: 22px;
+            }
+
+            .button-link {
+                margin-right: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="logo" href="home.html">🐾 Happy Paws</a>
+
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="pets.html">My Pets</a>
+            <a href="appointments.html">Appointments</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="page-heading">
+            <h1>🐾 Pet Health Records</h1>
+            <p>Keep track of your furry friend's health notes and important pet information.</p>
+        </section>
+
+        <div id="healthPet" class="dashboard-grid"></div>
+
+        <div class="panel">
+            <h2>💙 Need to Update a Record?</h2>
+            <p>Visit your pet's details or register a pet to save medical notes and keep health information organized.</p>
+            <a class="button-link" href="pets.html">View My Pets</a>
+            <a class="button-link" href="add-pet.html">+ Add Pet</a>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+</body>
 </html>
