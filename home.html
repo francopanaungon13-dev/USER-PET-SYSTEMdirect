@@ -1,70 +1,712 @@
-<html>
-    <head>
-<script src="shared-storage.js"></script>
-        <title>Happy Paws - Dashboard</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header class="topbar">
-            <a class="logo" href="home.html">🐾 Happy Paws</a>
-            <button class="menu-btn" onclick="toggleMenu()">☰</button>
-            <nav id="navMenu">
-                <a href="home.html">Home</a>
-                <a href="pets.html">My Pets</a>
-                <a href="appointments.html">Appointments</a>
-                <a href="services.html">Services</a>
-                <a href="consultation.html">Consultation</a>
-                <a href="health-records.html">Health Records</a>
-                <a href="notifications.html">Notifications</a>
-                <a href="profile.html">Profile</a>
-                <a href="index.html" data-logout>Logout</a>
-            </nav>
-        </header>
 
-        <main class="container">
-            <h1>Welcome to Happy Paws!</h1>
-            <p>Your trusted partner in pet care.</p>
-            
-            <div class="dashboard-grid">
-                <a class="dashboard-card" href="pets.html">
-                    <span>🐶</span>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Home</title>
+    <script src="shared-storage.js"></script>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f8fc;
+            color: #263747;
+        }
+
+        .topbar {
+            background: white;
+            padding: 16px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 3px 15px #dce7ef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+            color: #168bd2;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        #navMenu {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        #navMenu a {
+            color: #526575;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        #navMenu a:hover,
+        #navMenu a.active {
+            color: #168bd2;
+        }
+
+        .menu-btn {
+            display: none;
+            background: #e7f5ff;
+            border: none;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 21px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1250px;
+            margin: auto;
+            padding: 30px 25px 50px;
+        }
+
+        .welcome {
+            min-height: 285px;
+            background: linear-gradient(120deg, #d9f3ff, #e9e5ff);
+            border-radius: 25px;
+            padding: 38px 42px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            overflow: hidden;
+            position: relative;
+            animation: fadeUp 0.7s ease;
+        }
+
+        .welcome-text {
+            max-width: 570px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-tag {
+            display: inline-block;
+            background: white;
+            color: #168bd2;
+            padding: 9px 15px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 18px;
+        }
+
+        .welcome h1 {
+            font-size: clamp(29px, 4vw, 43px);
+            line-height: 1.2;
+            color: #17466c;
+            margin-bottom: 15px;
+        }
+
+        .welcome h1 span {
+            color: #168bd2;
+        }
+
+        .welcome p {
+            line-height: 1.8;
+            color: #536b7c;
+            margin-bottom: 23px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 13px 19px;
+            border-radius: 11px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.25s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #168bd2;
+            color: white;
+            box-shadow: 0 5px 12px #168bd233;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #168bd2;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 17px #476d8a26;
+        }
+
+        .hero-image {
+            width: 40%;
+            max-width: 390px;
+            min-width: 220px;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 22px;
+            box-shadow: 0 12px 30px #456b8724;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin: 35px 0 18px;
+        }
+
+        .section-heading h2 {
+            color: #24445c;
+            font-size: 23px;
+        }
+
+        .section-heading p {
+            color: #8293a1;
+            font-size: 13px;
+            margin-top: 6px;
+        }
+
+        .search-box {
+            width: 260px;
+            max-width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dce8f0;
+            border-radius: 12px;
+            background: white;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .search-box:focus {
+            border-color: #168bd2;
+            box-shadow: 0 0 0 3px #168bd21a;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border: 1px solid #e8eff5;
+            border-radius: 19px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            animation: fadeUp 0.7s ease both;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px #31587815;
+            border-color: #b9e4ff;
+        }
+
+        .card-icon {
+            width: 57px;
+            height: 57px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 29px;
+            margin-bottom: 19px;
+        }
+
+        .blue { background: #e1f3ff; }
+        .purple { background: #eee7ff; }
+        .pink { background: #ffe9f0; }
+        .green { background: #e2f8ec; }
+        .orange { background: #fff0dc; }
+        .yellow { background: #fff7d9; }
+
+        .dashboard-card h3 {
+            font-size: 18px;
+            color: #28475e;
+            margin-bottom: 9px;
+        }
+
+        .dashboard-card p {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #81909d;
+        }
+
+        .card-link {
+            display: inline-block;
+            margin-top: 17px;
+            color: #168bd2;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .empty-result {
+            display: none;
+            padding: 25px;
+            color: #81909d;
+            text-align: center;
+            background: white;
+            border-radius: 14px;
+            margin-top: 15px;
+        }
+
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 20px;
+            margin-top: 28px;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #e8eff5;
+        }
+
+        .panel h2 {
+            font-size: 20px;
+            margin-bottom: 9px;
+            color: #28475e;
+        }
+
+        .panel-description {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #81909d;
+            margin-bottom: 20px;
+        }
+
+        .action-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 13px;
+            background: #f5faff;
+            text-decoration: none;
+            color: #34546a;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .action-item:hover {
+            background: #e4f4ff;
+            transform: translateY(-2px);
+        }
+
+        .action-item span {
+            font-size: 23px;
+        }
+
+        .care-tip {
+            background: linear-gradient(135deg, #e4f8ed, #edfff8);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 18px;
+        }
+
+        .care-tip h3 {
+            color: #237a54;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .care-tip p {
+            color: #527566;
+            line-height: 1.8;
+            font-size: 13px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #8b9ba8;
+            font-size: 12px;
+        }
+
+        .hidden-card {
+            display: none !important;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 1050px) {
+            #navMenu {
+                gap: 10px;
+            }
+
+            #navMenu a {
+                font-size: 12px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .topbar {
+                flex-wrap: wrap;
+                padding: 15px 20px;
+            }
+
+            .menu-btn {
+                display: block;
+                margin-left: auto;
+            }
+
+            #navMenu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0;
+            }
+
+            #navMenu.show {
+                display: flex;
+            }
+
+            #navMenu a {
+                padding: 13px 8px;
+                border-top: 1px solid #edf2f6;
+                font-size: 14px;
+            }
+
+            .container {
+                padding: 20px 15px 35px;
+            }
+
+            .welcome {
+                padding: 27px 22px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-image {
+                width: 100%;
+                max-width: none;
+                min-width: 0;
+                height: 200px;
+            }
+
+            .welcome h1 {
+                font-size: 31px;
+            }
+
+            .section-heading {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .dashboard-card {
+                padding: 17px;
+            }
+
+            .card-icon {
+                width: 47px;
+                height: 47px;
+                font-size: 25px;
+            }
+
+            .dashboard-card h3 {
+                font-size: 16px;
+            }
+
+            .dashboard-card p {
+                font-size: 12px;
+            }
+
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="logo" href="home.html">🐾 Happy Paws</a>
+
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+
+        <nav id="navMenu">
+            <a class="active" href="home.html">Home</a>
+            <a href="pets.html">My Pets</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="services.html">Services</a>
+            <a href="consultation.html">Consultation</a>
+            <a href="health-records.html">Health Records</a>
+            <a href="notifications.html">Notifications</a>
+            <a href="profile.html">Profile</a>
+            <a href="index.html" data-logout>Logout</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="welcome">
+            <div class="welcome-text">
+                <span class="welcome-tag">🐾 YOUR PET'S HAPPY PLACE</span>
+                <h1>Every Pet Deserves <span>Extra Love!</span></h1>
+                <p>
+                    Welcome to Happy Paws! Keep your furry friends healthy,
+                    organize their appointments, and manage their pet care
+                    information all in one place.
+                </p>
+
+                <div class="hero-buttons">
+                    <a class="btn btn-primary" href="add-pet.html">＋ Add Your Pet</a>
+                    <a class="btn btn-secondary" href="book-appointment.html">📅 Book Appointment</a>
+                </div>
+            </div>
+
+            <img
+                class="hero-image"
+                src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=900&q=85"
+                alt="Happy dog enjoying time outdoors"
+            >
+        </section>
+
+        <section>
+            <div class="section-heading">
+                <div>
+                    <h2>Your Pet Care Dashboard 🐾</h2>
+                    <p>Everything you need to take care of your pets.</p>
+                </div>
+
+                <input
+                    type="search"
+                    class="search-box"
+                    id="cardSearch"
+                    placeholder="🔍 Search dashboard..."
+                    aria-label="Search dashboard features"
+                >
+            </div>
+
+            <div class="dashboard-grid" id="dashboardGrid">
+                <a class="dashboard-card" href="pets.html" style="animation-delay: 0.05s">
+                    <div class="card-icon blue">🐶</div>
                     <h3>My Pets</h3>
-                    <p>Manage pet information.</p>
+                    <p>View and manage your pets' profiles and personal information.</p>
+                    <span class="card-link">View My Pets →</span>
                 </a>
-                <a class="dashboard-card" href="appointments.html">
-                    <span>📅</span>
+
+                <a class="dashboard-card" href="appointments.html" style="animation-delay: 0.1s">
+                    <div class="card-icon purple">📅</div>
                     <h3>Appointments</h3>
-                    <p>View your appointments.</p>
+                    <p>Keep track of scheduled visits and your pet's upcoming checkups.</p>
+                    <span class="card-link">View Appointments →</span>
                 </a>
-                <a class="dashboard-card" href="services.html">
-                    <span>🐾</span>
-                    <h3>Services</h3>
-                    <p>Explore pet care services.</p>
+
+                <a class="dashboard-card" href="services.html" style="animation-delay: 0.15s">
+                    <div class="card-icon pink">🐾</div>
+                    <h3>Pet Care Services</h3>
+                    <p>Explore available services to help your furry friend stay healthy.</p>
+                    <span class="card-link">Explore Services →</span>
                 </a>
-                <a class="dashboard-card" href="consultation.html">
-                    <span>🩺</span>
+
+                <a class="dashboard-card" href="consultation.html" style="animation-delay: 0.2s">
+                    <div class="card-icon green">🩺</div>
                     <h3>Consultation</h3>
-                    <p>Send a consultation request.</p>
+                    <p>Send a consultation request about your pet's needs and concerns.</p>
+                    <span class="card-link">Get Consultation →</span>
                 </a>
-                <a class="dashboard-card" href="health-records.html">
-                    <span>📋</span>
+
+                <a class="dashboard-card" href="health-records.html" style="animation-delay: 0.25s">
+                    <div class="card-icon orange">📋</div>
                     <h3>Health Records</h3>
-                    <p>Review pet health notes.</p>
+                    <p>Review your pet's health history, notes, and recorded information.</p>
+                    <span class="card-link">View Health Records →</span>
                 </a>
-                <a class="dashboard-card" href="notifications.html">
-                    <span>🔔</span>
+
+                <a class="dashboard-card" href="notifications.html" style="animation-delay: 0.3s">
+                    <div class="card-icon yellow">🔔</div>
                     <h3>Notifications</h3>
-                    <p>Check appointment updates.</p>
+                    <p>Check important updates and notifications about your pet care activities.</p>
+                    <span class="card-link">Check Updates →</span>
                 </a>
+            </div>
+
+            <div class="empty-result" id="emptyResult">
+                No dashboard features found. Try another keyword.
+            </div>
+        </section>
+
+        <section class="bottom-grid">
+            <div class="panel">
+                <h2>Quick Actions ⚡</h2>
+                <p class="panel-description">
+                    Save time by accessing your most-used pet care features.
+                </p>
+
+                <div class="action-list">
+                    <a class="action-item" href="add-pet.html">
+                        <span>🐕</span> Add a New Pet
+                    </a>
+
+                    <a class="action-item" href="book-appointment.html">
+                        <span>🗓️</span> Book Appointment
+                    </a>
+
+                    <a class="action-item" href="consultation.html">
+                        <span>🩺</span> Request Consultation
+                    </a>
+
+                    <a class="action-item" href="health-records.html">
+                        <span>📑</span> Check Health Records
+                    </a>
+                </div>
             </div>
 
             <div class="panel">
-                <h2>Quick Actions</h2>
-                <a class="button-link" href="add-pet.html">+ Add Pet</a>
-                <a class="button-link" href="book-appointment.html">Book Appointment</a>
+                <h2>A Little Pet Care Reminder 💚</h2>
+                <p class="panel-description">
+                    Small acts of care can make a big difference in your pet's life.
+                </p>
+
+                <div class="care-tip">
+                    <h3>🐾 Today's Care Tip</h3>
+                    <p id="careTip">
+                        Keep fresh, clean water available for your pet throughout
+                        the day. Remember to provide suitable food, regular exercise,
+                        and routine veterinary checkups.
+                    </p>
+                </div>
+
+                <a class="btn btn-primary" href="services.html" style="margin-top: 18px;">
+                    Explore Pet Care
+                </a>
             </div>
-        </main>
-<script type="module" src="app.js"></script>
-    </body>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>🐾 Happy Paws © 2026 | Caring for Your Furry Family</p>
+        <p style="margin-top: 7px;">Healthy Pets, Happy Hearts 💙</p>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById("menuBtn");
+        const navMenu = document.getElementById("navMenu");
+
+        menuBtn.addEventListener("click", function () {
+            const isOpen = navMenu.classList.toggle("show");
+            menuBtn.setAttribute("aria-expanded", String(isOpen));
+            menuBtn.textContent = isOpen ? "✕" : "☰";
+        });
+
+        document.querySelectorAll("#navMenu a").forEach(function (link) {
+            link.addEventListener("click", function () {
+                navMenu.classList.remove("show");
+                menuBtn.setAttribute("aria-expanded", "false");
+                menuBtn.textContent = "☰";
+            });
+        });
+
+        const searchInput = document.getElementById("cardSearch");
+        const cards = document.querySelectorAll(".dashboard-card");
+        const emptyResult = document.getElementById("emptyResult");
+
+        searchInput.addEventListener("input", function () {
+            const keyword = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const matches = card.textContent.toLowerCase().includes(keyword);
+                card.classList.toggle("hidden-card", !matches);
+
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            emptyResult.style.display = visibleCount === 0 ? "block" : "none";
+        });
+
+        const careTips = [
+            "Keep fresh, clean water available for your pet throughout the day. Regular hydration helps support good health.",
+            "Make time for daily play and exercise. Activities suited to your pet can help keep them active and happy.",
+            "Brush your pet regularly when appropriate for their coat. Grooming also gives you a chance to notice changes.",
+            "Schedule routine veterinary checkups and ask your veterinarian about appropriate vaccinations and parasite prevention.",
+            "Keep your pet's resting area clean, comfortable, and safe. A calm place to rest helps support their well-being."
+        ];
+
+        const dayIndex = Math.floor(Date.now() / 86400000) % careTips.length;
+        document.getElementById("careTip").textContent = careTips[dayIndex];
+    </script>
+
+    <script type="module" src="app.js"></script>
+</body>
 </html>
