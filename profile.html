@@ -1,42 +1,329 @@
 <html>
-    <head>
-<script src="shared-storage.js"></script>
-        <title>Happy Paws - My Profile</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header class="topbar">
-            <a class="logo" href="home.html">🐾 Happy Paws</a>
-            <nav>
-                <a href="home.html">Home</a>
-                <a href="pets.html">My Pets</a>
-                <a href="appointments.html">Appointments</a>
-                <a href="index.html" data-logout>Logout</a>
-            </nav>
-        </header>
+<head>
+    <script src="shared-storage.js"></script>
+    <title>Happy Paws - My Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
 
-        <main class="container">
-            <div class="panel">
-                <h1>My Profile</h1>
-                <p>View and update your account information.</p>
-                <form id="profileForm">
-                    <label>Full Name</label>
-                    <input type="text" id="profileName" required>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-                    <label>Email Address</label>
-                    <input type="email" id="profileEmail" readonly>
+        body {
+            background: linear-gradient(135deg, #edf7ff, #f8fbff, #e8f4ff);
+            color: #263746;
+            min-height: 100vh;
+        }
 
-                    <button type="submit">Save Changes</button>
-                </form>
+        .topbar {
+            background: linear-gradient(100deg, #087cff, #45b5ff);
+            min-height: 75px;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 4px 15px rgba(8, 124, 255, 0.18);
+        }
+
+        .logo {
+            color: white;
+            font-size: 25px;
+            font-weight: bold;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 40px auto;
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #e1edfa;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(28, 91, 145, 0.09);
+            transition: 0.25s;
+        }
+
+        .panel:hover {
+            box-shadow: 0 12px 30px rgba(28, 91, 145, 0.14);
+        }
+
+        .profile-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d8edff, #a8d9ff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            margin-bottom: 20px;
+            border: 4px solid #f0f8ff;
+        }
+
+        h1 {
+            color: #0869cf;
+            font-size: 29px;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #0869cf;
+            font-size: 21px;
+            margin-bottom: 12px;
+        }
+
+        .panel p {
+            color: #728399;
+            font-size: 14px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            color: #344b60;
+            font-weight: bold;
+            margin: 18px 0 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d6e5f3;
+            background: #f7fbff;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.25s;
+        }
+
+        input:focus {
+            border-color: #1687f8;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(22, 135, 248, 0.12);
+        }
+
+        input[readonly] {
+            background: #edf3f8;
+            color: #708197;
+            cursor: not-allowed;
+        }
+
+        button,
+        .button-link {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            border: none;
+            border-radius: 10px;
+            padding: 13px 18px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.25s;
+        }
+
+        #profileForm button {
+            width: 100%;
+            margin-top: 25px;
+            color: white;
+            background: linear-gradient(100deg, #087cff, #32a6ff);
+            box-shadow: 0 5px 12px rgba(8, 124, 255, 0.2);
+        }
+
+        #profileForm button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 17px rgba(8, 124, 255, 0.3);
+        }
+
+        .settings-icon {
+            width: 55px;
+            height: 55px;
+            background: #e8f4ff;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            margin-bottom: 18px;
+        }
+
+        .settings-description {
+            margin-bottom: 20px !important;
+        }
+
+        .button-link {
+            width: 100%;
+            background: #eaf5ff;
+            color: #0875e1;
+            border: 1px solid #cce5ff;
+            margin-bottom: 12px;
+        }
+
+        .button-link:hover {
+            background: #d9edff;
+            transform: translateY(-2px);
+        }
+
+        button[data-logout] {
+            width: 100%;
+            background: #fff0f0;
+            color: #d94343;
+            border: 1px solid #ffd6d6;
+        }
+
+        button[data-logout]:hover {
+            background: #ffe1e1;
+            transform: translateY(-2px);
+        }
+
+        .security-note {
+            margin-top: 22px;
+            padding: 14px;
+            background: #f0f9ff;
+            border-radius: 12px;
+            color: #5a7894;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 760px) {
+            .topbar {
+                padding: 18px 5%;
+                justify-content: center;
+            }
+
+            .logo {
+                width: 100%;
+                text-align: center;
+            }
+
+            nav {
+                justify-content: center;
+            }
+
+            nav a {
+                padding: 9px 10px;
+                font-size: 13px;
+            }
+
+            .container {
+                width: 92%;
+                margin: 25px auto;
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .panel {
+                padding: 23px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            nav {
+                gap: 4px;
+            }
+
+            nav a {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="logo" href="home.html">🐾 Happy Paws</a>
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="pets.html">My Pets</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="index.html" data-logout>Logout</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="panel">
+            <div class="profile-icon">👤</div>
+            <h1>My Profile</h1>
+            <p>View and update your account information.</p>
+
+            <form id="profileForm">
+                <label for="profileName">Full Name</label>
+                <input type="text" id="profileName" placeholder="Enter your full name" required>
+
+                <label for="profileEmail">Email Address</label>
+                <input type="email" id="profileEmail" placeholder="Your registered email" readonly>
+
+                <button type="submit">💾 Save Changes</button>
+            </form>
+        </div>
+
+        <div class="panel">
+            <div class="settings-icon">⚙️</div>
+            <h2>Account Settings</h2>
+            <p class="settings-description">Manage your notifications and account access.</p>
+
+            <a class="button-link" href="notifications.html">🔔 Notifications</a>
+            <button type="button" data-logout>🚪 Logout</button>
+
+            <div class="security-note">
+                🛡️ <strong>Account Security</strong><br>
+                Keep your account information updated and make sure to log out when using a shared device.
             </div>
+        </div>
+    </main>
 
-            <div class="panel">
-                <h2>Account Settings</h2>
-                <a class="button-link" href="notifications.html">Notifications</a>
-                <button type="button" data-logout>Logout</button>
-            </div>
-        </main>
-<script type="module" src="app.js"></script>
-    </body>
+    <script type="module" src="app.js"></script>
+</body>
 </html>
