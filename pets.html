@@ -1,31 +1,615 @@
-<html>
-    <head>
-<script src="shared-storage.js"></script>
-        <title>Happy Paws - My Pets</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header class="topbar">
-            <a class="logo" href="home.html">🐾 Happy Paws</a>
-            <nav>
-                <a href="home.html">Home</a>
-                <a href="pets.html">My Pets</a>
-                <a href="appointments.html">Appointments</a>
-            </nav>
-        </header>
 
-        <main class="container">
-            <div class="page-heading">
-                <div>
-                    <h1>My Pets</h1>
-                    <p>Manage your registered pets.</p>
-                </div>
-                <a class="button-link" href="add-pet.html">+ Add Pet</a>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - My Pets</title>
+    <script src="shared-storage.js"></script>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f8fc;
+            color: #263747;
+        }
+
+        .topbar {
+            background: white;
+            padding: 16px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 3px 15px #dce7ef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            color: #168bd2;
+            font-size: 23px;
+            font-weight: bold;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .topbar nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .topbar nav a {
+            text-decoration: none;
+            color: #526575;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .topbar nav a:hover,
+        .topbar nav a.active {
+            color: #168bd2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 32px 24px 50px;
+        }
+
+        .page-banner {
+            background: linear-gradient(120deg, #d9f3ff, #ece7ff);
+            border-radius: 23px;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            overflow: hidden;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .banner-text {
+            max-width: 600px;
+        }
+
+        .banner-label {
+            display: inline-block;
+            background: white;
+            color: #168bd2;
+            border-radius: 30px;
+            padding: 8px 13px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 14px;
+        }
+
+        .page-banner h1 {
+            color: #17466c;
+            font-size: clamp(29px, 4vw, 39px);
+            margin-bottom: 12px;
+        }
+
+        .page-banner p {
+            color: #60798b;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .banner-image {
+            width: 220px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 20px;
+            flex-shrink: 0;
+        }
+
+        .button-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            background: #168bd2;
+            color: white;
+            padding: 13px 19px;
+            border-radius: 11px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+
+        .button-link:hover {
+            background: #0875b8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px #168bd233;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin: 32px 0 20px;
+        }
+
+        .section-heading h2 {
+            font-size: 23px;
+            color: #28475e;
+            margin-bottom: 7px;
+        }
+
+        .section-heading p {
+            color: #81909d;
+            font-size: 13px;
+        }
+
+        .search-box {
+            width: 280px;
+            max-width: 100%;
+            background: white;
+            border: 1px solid #dce8f0;
+            border-radius: 12px;
+            padding: 13px 15px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            border-color: #168bd2;
+            box-shadow: 0 0 0 3px #168bd21a;
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 23px;
+        }
+
+        .filter-btn {
+            background: white;
+            color: #617586;
+            border: 1px solid #e0eaf2;
+            border-radius: 25px;
+            padding: 10px 18px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #168bd2;
+            color: white;
+            border-color: #168bd2;
+        }
+
+        .pet-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .pet-card {
+            background: white;
+            border: 1px solid #e6eef5;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px #31587808;
+            transition: 0.3s;
+            animation: fadeUp 0.5s ease both;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 28px #31587816;
+        }
+
+        .pet-image-wrap {
+            position: relative;
+            height: 205px;
+            background: #e9f5fc;
+            overflow: hidden;
+        }
+
+        .pet-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+
+        .pet-card:hover .pet-image {
+            transform: scale(1.05);
+        }
+
+        .pet-type {
+            position: absolute;
+            top: 13px;
+            left: 13px;
+            background: white;
+            color: #168bd2;
+            padding: 7px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            box-shadow: 0 3px 8px #00000010;
+        }
+
+        .pet-card-content {
+            padding: 21px;
+        }
+
+        .pet-card-content h3 {
+            font-size: 21px;
+            color: #28475e;
+            margin-bottom: 6px;
+        }
+
+        .pet-breed {
+            color: #8494a1;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .pet-details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            padding: 15px 0;
+            border-top: 1px solid #edf2f6;
+            border-bottom: 1px solid #edf2f6;
+        }
+
+        .detail-label {
+            display: block;
+            color: #91a0ad;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            color: #405a6e;
+            font-size: 13px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .pet-actions {
+            display: flex;
+            gap: 9px;
+            margin-top: 17px;
+        }
+
+        .pet-action {
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            padding: 11px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #dcebf5;
+            color: #168bd2;
+            background: #f5faff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .pet-action:hover {
+            background: #e2f3ff;
+        }
+
+        .pet-action.primary {
+            background: #168bd2;
+            color: white;
+            border-color: #168bd2;
+        }
+
+        .pet-action.primary:hover {
+            background: #0875b8;
+        }
+
+        .empty-state {
+            display: none;
+            background: white;
+            border: 1px dashed #cddfea;
+            border-radius: 20px;
+            text-align: center;
+            padding: 45px 20px;
+            margin-top: 10px;
+        }
+
+        .empty-state .empty-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: #28475e;
+            font-size: 21px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #81909d;
+            font-size: 14px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .pet-count {
+            font-size: 13px;
+            color: #81909d;
+            margin-top: 18px;
+        }
+
+        .pet-count strong {
+            color: #168bd2;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #8b9ba8;
+            font-size: 12px;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .pet-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .banner-image {
+                width: 180px;
+                height: 160px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 16px 18px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .topbar nav {
+                width: 100%;
+                gap: 18px;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .topbar nav a {
+                white-space: nowrap;
+            }
+
+            .container {
+                padding: 22px 15px 35px;
+            }
+
+            .page-banner {
+                padding: 25px 20px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .banner-image {
+                width: 100%;
+                height: 190px;
+            }
+
+            .section-heading {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .pet-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pet-image-wrap {
+                height: 230px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="logo" href="home.html">🐾 Happy Paws</a>
+
+        <nav>
+            <a href="home.html">Home</a>
+            <a class="active" href="pets.html">My Pets</a>
+            <a href="appointments.html">Appointments</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="page-banner">
+            <div class="banner-text">
+                <span class="banner-label">🐾 YOUR PET FAMILY</span>
+                <h1>Meet Your Lovely Pets!</h1>
+                <p>
+                    All your furry family members in one place.
+                    Manage their information and keep their records organized
+                    with Happy Paws.
+                </p>
+
+                <a class="button-link" href="add-pet.html" style="margin-top: 20px;">
+                    ＋ Register a Pet
+                </a>
             </div>
 
-            <div id="petList" class="dashboard-grid"></div>
-        </main>
-<script type="module" src="app.js"></script>
-    </body>
+            <img
+                class="banner-image"
+                src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=700&q=85"
+                alt="A dog and its owner"
+            >
+        </section>
+
+        <section>
+            <div class="section-heading">
+                <div>
+                    <h2>My Pet Collection 🐶</h2>
+                    <p>View and manage your registered companions.</p>
+                </div>
+
+                <input
+                    type="search"
+                    class="search-box"
+                    id="petSearch"
+                    placeholder="🔍 Search pet name or breed..."
+                    aria-label="Search pets"
+                >
+            </div>
+
+            <div class="filter-row">
+                <button class="filter-btn active" data-filter="all">All Pets</button>
+                <button class="filter-btn" data-filter="dog">🐶 Dogs</button>
+                <button class="filter-btn" data-filter="cat">🐱 Cats</button>
+            </div>
+
+            <div id="petList" class="pet-grid"></div>
+
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🐾</div>
+                <h3 id="emptyTitle">Your pet family starts here!</h3>
+                <p id="emptyMessage">
+                    You haven't registered a pet yet. Add your first pet
+                    to start managing their information.
+                </p>
+                <a class="button-link" href="add-pet.html">＋ Add Your First Pet</a>
+            </div>
+
+            <p class="pet-count" id="petCount"></p>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>🐾 Happy Paws © 2026 | Healthy Pets, Happy Hearts 💙</p>
+    </footer>
+
+    <script>
+        let selectedFilter = "all";
+
+        const petList = document.getElementById("petList");
+        const petSearch = document.getElementById("petSearch");
+        const emptyState = document.getElementById("emptyState");
+        const emptyTitle = document.getElementById("emptyTitle");
+        const emptyMessage = document.getElementById("emptyMessage");
+        const petCount = document.getElementById("petCount");
+
+        function getPetCards() {
+            return Array.from(petList.children).filter(function (element) {
+                return element.nodeType === 1;
+            });
+        }
+
+        function filterPets() {
+            const keyword = petSearch.value.toLowerCase().trim();
+            const petCards = getPetCards();
+            let visible = 0;
+
+            petCards.forEach(function (card) {
+                const text = card.textContent.toLowerCase();
+                const type = (
+                    card.dataset.type ||
+                    card.getAttribute("data-type") ||
+                    ""
+                ).toLowerCase();
+
+                const matchesSearch = text.includes(keyword);
+                const matchesType =
+                    selectedFilter === "all" ||
+                    type.includes(selectedFilter) ||
+                    text.includes(selectedFilter);
+
+                const show = matchesSearch && matchesType;
+                card.style.display = show ? "" : "none";
+
+                if (show) visible++;
+            });
+
+            if (petCards.length === 0) {
+                emptyState.style.display = "block";
+                petList.style.display = "none";
+                emptyTitle.textContent = "Your pet family starts here!";
+                emptyMessage.textContent =
+                    "You haven't registered a pet yet. Add your first pet to start managing their information.";
+                petCount.textContent = "";
+            } else if (visible === 0) {
+                emptyState.style.display = "block";
+                petList.style.display = "none";
+                emptyTitle.textContent = "No pets found";
+                emptyMessage.textContent =
+                    "Try another search keyword or choose a different pet category.";
+                petCount.textContent = "";
+            } else {
+                emptyState.style.display = "none";
+                petList.style.display = "grid";
+                petCount.innerHTML =
+                    "Showing <strong>" + visible + "</strong> pet" +
+                    (visible === 1 ? "" : "s");
+            }
+        }
+
+        petSearch.addEventListener("input", filterPets);
+
+        document.querySelectorAll(".filter-btn").forEach(function (button) {
+            button.addEventListener("click", function () {
+                document.querySelectorAll(".filter-btn").forEach(function (item) {
+                    item.classList.remove("active");
+                });
+
+                button.classList.add("active");
+                selectedFilter = button.dataset.filter;
+                filterPets();
+            });
+        });
+
+        const observer = new MutationObserver(function () {
+            filterPets();
+        });
+
+        observer.observe(petList, {
+            childList: true,
+            subtree: true
+        });
+
+        filterPets();
+    </script>
+
+    <script type="module" src="app.js"></script>
+</body>
 </html>
