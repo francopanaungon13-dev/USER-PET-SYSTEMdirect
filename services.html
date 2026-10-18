@@ -1,68 +1,674 @@
-<html>
-    <head>
-<script src="shared-storage.js"></script>
-        <title>Happy Paws - Services</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="styles.css">
-    </head>
-    <body>
-        <header class="topbar">
-            <a class="logo" href="home.html">🐾 Happy Paws</a>
-            <nav>
-                <a href="home.html">Home</a>
-                <a href="pets.html">My Pets</a>
-                <a href="appointments.html">Appointments</a>
-            </nav>
-        </header>
 
-        <main class="container">
-            <h1>Our Services</h1>
-            <p>Quality care for your beloved pets.</p>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Paws - Services</title>
+    <script src="shared-storage.js"></script>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f3f8fc;
+            color: #263747;
+        }
+
+        .topbar {
+            background: white;
+            padding: 16px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            box-shadow: 0 3px 15px #dce7ef;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            color: #168bd2;
+            font-size: 23px;
+            font-weight: bold;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .topbar nav {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .topbar nav a {
+            color: #526575;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .topbar nav a:hover,
+        .topbar nav a.active {
+            color: #168bd2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 32px 24px 50px;
+        }
+
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+            padding: 35px;
+            background: linear-gradient(120deg, #d9f3ff, #ece7ff);
+            border-radius: 24px;
+            overflow: hidden;
+            animation: fadeUp 0.6s ease;
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 8px 13px;
+            margin-bottom: 15px;
+            border-radius: 25px;
+            background: white;
+            color: #168bd2;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .hero h1 {
+            color: #17466c;
+            font-size: clamp(30px, 4vw, 42px);
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 span {
+            color: #168bd2;
+        }
+
+        .hero p {
+            color: #60798b;
+            font-size: 14px;
+            line-height: 1.9;
+            margin-bottom: 22px;
+        }
+
+        .hero-image {
+            width: 300px;
+            height: 220px;
+            flex-shrink: 0;
+            object-fit: cover;
+            border-radius: 22px;
+            box-shadow: 0 10px 25px #31587820;
+        }
+
+        .button-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 12px 17px;
+            border-radius: 11px;
+            background: #168bd2;
+            color: white;
+            text-decoration: none;
+            border: none;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .button-link:hover {
+            background: #0875b8;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px #168bd233;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin: 35px 0 20px;
+        }
+
+        .section-heading h2 {
+            color: #28475e;
+            font-size: 24px;
+            margin-bottom: 7px;
+        }
+
+        .section-heading p {
+            color: #81909d;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .search-box {
+            width: 280px;
+            max-width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #dce8f0;
+            border-radius: 12px;
+            background: white;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .search-box:focus {
+            border-color: #168bd2;
+            box-shadow: 0 0 0 3px #168bd21a;
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .filter-btn {
+            padding: 10px 17px;
+            border-radius: 25px;
+            border: 1px solid #e0eaf2;
+            background: white;
+            color: #617586;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: #168bd2;
+            border-color: #168bd2;
+            color: white;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .dashboard-card {
+            background: white;
+            border: 1px solid #e6eef5;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: 0.3s;
+            animation: fadeUp 0.6s ease both;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px #31587817;
+            border-color: #c5e7fb;
+        }
+
+        .service-image {
+            width: 100%;
+            height: 185px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s;
+        }
+
+        .image-wrap {
+            overflow: hidden;
+            position: relative;
+            background: #e1f3ff;
+        }
+
+        .dashboard-card:hover .service-image {
+            transform: scale(1.05);
+        }
+
+        .service-icon {
+            position: absolute;
+            bottom: 13px;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 49px;
+            height: 49px;
+            border-radius: 15px;
+            background: white;
+            font-size: 26px;
+            box-shadow: 0 4px 12px #00000012;
+        }
+
+        .service-content {
+            padding: 22px;
+        }
+
+        .service-category {
+            display: inline-block;
+            padding: 6px 10px;
+            margin-bottom: 12px;
+            border-radius: 20px;
+            background: #e6f5ff;
+            color: #168bd2;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .service-content h3 {
+            color: #28475e;
+            font-size: 19px;
+            margin-bottom: 10px;
+        }
+
+        .service-content p {
+            min-height: 44px;
+            color: #81909d;
+            font-size: 13px;
+            line-height: 1.8;
+            margin-bottom: 19px;
+        }
+
+        .service-content .button-link {
+            width: 100%;
+        }
+
+        .empty-result {
+            display: none;
+            padding: 40px 20px;
+            background: white;
+            border: 1px dashed #cddfea;
+            border-radius: 18px;
+            text-align: center;
+            color: #81909d;
+            line-height: 1.8;
+        }
+
+        .care-banner {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-top: 30px;
+            padding: 23px;
+            background: linear-gradient(120deg, #e2f8ec, #effff8);
+            border-radius: 18px;
+        }
+
+        .care-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 55px;
+            height: 55px;
+            flex-shrink: 0;
+            background: white;
+            border-radius: 16px;
+            font-size: 28px;
+        }
+
+        .care-banner h3 {
+            color: #237a54;
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .care-banner p {
+            color: #527566;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #8b9ba8;
+            font-size: 12px;
+        }
+
+        .hidden-card {
+            display: none !important;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(14px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .hero-image {
+                width: 240px;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 16px 18px;
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .topbar nav {
+                width: 100%;
+                gap: 18px;
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .topbar nav a {
+                white-space: nowrap;
+            }
+
+            .container {
+                padding: 22px 15px 35px;
+            }
+
+            .hero {
+                padding: 25px 20px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .section-heading {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 17px;
+            }
+
+            .service-image {
+                height: 210px;
+            }
+
+            .care-banner {
+                align-items: flex-start;
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="topbar">
+        <a class="logo" href="home.html">🐾 Happy Paws</a>
+
+        <nav>
+            <a href="home.html">Home</a>
+            <a href="pets.html">My Pets</a>
+            <a href="appointments.html">Appointments</a>
+            <a class="active" href="services.html">Services</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <div class="hero-text">
+                <span class="hero-tag">💙 CARE THAT COMES FROM THE HEART</span>
+                <h1>Our Services for Your <span>Best Friend!</span></h1>
+                <p>
+                    From routine checkups to grooming, Happy Paws helps you
+                    organize your pet's care in one convenient place.
+                    Because every furry friend deserves love and attention.
+                </p>
+                <a class="button-link" href="book-appointment.html">
+                    📅 Book an Appointment
+                </a>
+            </div>
+
+            <img
+                class="hero-image"
+                src="https://images.unsplash.com/photo-1587559070757-f72a388edbba?auto=format&fit=crop&w=800&q=85"
+                alt="Veterinarian taking care of a dog"
+            >
+        </section>
+
+        <section>
+            <div class="section-heading">
+                <div>
+                    <h2>Explore Our Services 🐾</h2>
+                    <p>Find the right care for your beloved companion.</p>
+                </div>
+
+                <input
+                    type="search"
+                    class="search-box"
+                    id="serviceSearch"
+                    placeholder="🔍 Search services..."
+                    aria-label="Search services"
+                >
+            </div>
+
+            <div class="filter-row">
+                <button class="filter-btn active" data-filter="all">All Services</button>
+                <button class="filter-btn" data-filter="health">🩺 Health Care</button>
+                <button class="filter-btn" data-filter="grooming">🛁 Grooming</button>
+                <button class="filter-btn" data-filter="records">📋 Records</button>
+            </div>
 
             <div class="dashboard-grid" id="serviceList">
-                <div class="dashboard-card">
-                    <span>🩺</span>
-                    <h3>General Checkup</h3>
-                    <p>Routine health assessment for your pet.</p>
-                    <a class="button-link" href="book-appointment.html">Book Now</a>
-                </div>
+                <article class="dashboard-card" data-category="health">
+                    <div class="image-wrap">
+                        <img
+                            class="service-image"
+                            src="https://images.unsplash.com/photo-1628009368231-7bb7cfcb0def?auto=format&fit=crop&w=700&q=80"
+                            alt="Veterinary health examination"
+                            loading="lazy"
+                        >
+                        <span class="service-icon">🩺</span>
+                    </div>
+                    <div class="service-content">
+                        <span class="service-category">HEALTH CARE</span>
+                        <h3>General Checkup</h3>
+                        <p>Routine health assessment to help monitor your pet's overall well-being.</p>
+                        <a class="button-link" href="book-appointment.html">Book Now →</a>
+                    </div>
+                </article>
 
-                <div class="dashboard-card">
-                    <span>💉</span>
-                    <h3>Vaccination</h3>
-                    <p>Keep your pets protected and healthy.</p>
-                    <a class="button-link" href="book-appointment.html">Book Now</a>
-                </div>
+                <article class="dashboard-card" data-category="health">
+                    <div class="image-wrap">
+                        <img
+                            class="service-image"
+                            src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?auto=format&fit=crop&w=700&q=80"
+                            alt="Dog receiving veterinary care"
+                            loading="lazy"
+                        >
+                        <span class="service-icon">💉</span>
+                    </div>
+                    <div class="service-content">
+                        <span class="service-category">PREVENTIVE CARE</span>
+                        <h3>Vaccination</h3>
+                        <p>Keep track of your pet's vaccination needs with guidance from a veterinarian.</p>
+                        <a class="button-link" href="book-appointment.html">Book Now →</a>
+                    </div>
+                </article>
 
-                <div class="dashboard-card">
-                    <span>🛁</span>
-                    <h3>Grooming</h3>
-                    <p>Bathing, cleaning, and coat care.</p>
-                    <a class="button-link" href="book-appointment.html">Book Now</a>
-                </div>
+                <article class="dashboard-card" data-category="grooming">
+                    <div class="image-wrap">
+                        <img
+                            class="service-image"
+                            src="https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?auto=format&fit=crop&w=700&q=80"
+                            alt="Dog enjoying care"
+                            loading="lazy"
+                        >
+                        <span class="service-icon">🛁</span>
+                    </div>
+                    <div class="service-content">
+                        <span class="service-category">GROOMING</span>
+                        <h3>Pet Grooming</h3>
+                        <p>Bathing, brushing, and coat care to help your pet feel fresh and comfortable.</p>
+                        <a class="button-link" href="book-appointment.html">Book Now →</a>
+                    </div>
+                </article>
 
-                <div class="dashboard-card">
-                    <span>🦷</span>
-                    <h3>Dental Care</h3>
-                    <p>Support your pet's oral health.</p>
-                    <a class="button-link" href="book-appointment.html">Book Now</a>
-                </div>
+                <article class="dashboard-card" data-category="health">
+                    <div class="image-wrap">
+                        <img
+                            class="service-image"
+                            src="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=700&q=80"
+                            alt="Dog receiving attention"
+                            loading="lazy"
+                        >
+                        <span class="service-icon">🦷</span>
+                    </div>
+                    <div class="service-content">
+                        <span class="service-category">DENTAL HEALTH</span>
+                        <h3>Dental Care</h3>
+                        <p>Support your pet's oral hygiene and discuss dental concerns with a veterinarian.</p>
+                        <a class="button-link" href="book-appointment.html">Book Now →</a>
+                    </div>
+                </article>
 
-                <div class="dashboard-card">
-                    <span>🐾</span>
-                    <h3>Consultation</h3>
-                    <p>Submit questions about your pet's health.</p>
-                    <a class="button-link" href="consultation.html">Consult Now</a>
-                </div>
+                <article class="dashboard-card" data-category="health">
+                    <div class="image-wrap">
+                        <img
+                            class="service-image"
+                            src="https://images.unsplash.com/photo-1551739440-5dd934d3a94a?auto=format&fit=crop&w=700&q=80"
+                            alt="Pet receiving attentive care"
+                            loading="lazy"
+                        >
+                        <span class="service-icon">🐾</span>
+                    </div>
+                    <div class="service-content">
+                        <span class="service-category">PET CONSULTATION</span>
+                        <h3>Consultation</h3>
+                        <p>Submit questions and concerns about your pet's health and care needs.</p>
+                        <a class="button-link" href="consultation.html">Consult Now →</a>
+                    </div>
+                </article>
 
-                <div class="dashboard-card">
-                    <span>📋</span>
-                    <h3>Health Records</h3>
-                    <p>Review saved pet health notes.</p>
-                    <a class="button-link" href="health-records.html">View Records</a>
-                </div>
+                <article class="dashboard-card" data-category="records">
+                    <div class="image-wrap">
+                        <img
+                            class="service-image"
+                            src="https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=700&q=80"
+                            alt="Dogs spending time together"
+                            loading="lazy"
+                        >
+                        <span class="service-icon">📋</span>
+                    </div>
+                    <div class="service-content">
+                        <span class="service-category">PET INFORMATION</span>
+                        <h3>Health Records</h3>
+                        <p>Review available saved pet health notes and recorded information.</p>
+                        <a class="button-link" href="health-records.html">View Records →</a>
+                    </div>
+                </article>
             </div>
-        </main>
-<script type="module" src="app.js"></script>
-    </body>
+
+            <div class="empty-result" id="emptyResult">
+                <h3>No services found 🐾</h3>
+                <p>Try searching with another keyword or choose a different category.</p>
+            </div>
+        </section>
+
+        <section class="care-banner">
+            <div class="care-icon">💚</div>
+            <div>
+                <h3>Your Pet's Health Matters</h3>
+                <p>
+                    Service availability, treatment recommendations, and vaccination
+                    schedules should be confirmed with your veterinary provider.
+                    Choose a service to get started with your pet's care.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>🐾 Happy Paws © 2026 | Healthy Pets, Happy Hearts 💙</p>
+    </footer>
+
+    <script>
+        const serviceSearch = document.getElementById("serviceSearch");
+        const serviceList = document.getElementById("serviceList");
+        const emptyResult = document.getElementById("emptyResult");
+        const filterButtons = document.querySelectorAll(".filter-btn");
+
+        let selectedCategory = "all";
+
+        function filterServices() {
+            const keyword = serviceSearch.value.toLowerCase().trim();
+            const cards = serviceList.querySelectorAll(".dashboard-card");
+            let visibleCount = 0;
+
+            cards.forEach(function (card) {
+                const text = card.textContent.toLowerCase();
+                const category = card.dataset.category || "all";
+
+                const matchesSearch = text.includes(keyword);
+                const matchesCategory =
+                    selectedCategory === "all" ||
+                    category === selectedCategory;
+
+                const visible = matchesSearch && matchesCategory;
+
+                card.classList.toggle("hidden-card", !visible);
+
+                if (visible) visibleCount++;
+            });
+
+            emptyResult.style.display =
+                visibleCount === 0 ? "block" : "none";
+        }
+
+        serviceSearch.addEventListener("input", filterServices);
+
+        filterButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                filterButtons.forEach(function (item) {
+                    item.classList.remove("active");
+                });
+
+                button.classList.add("active");
+                selectedCategory = button.dataset.filter;
+                filterServices();
+            });
+        });
+
+        filterServices();
+    </script>
+
+    <script type="module" src="app.js"></script>
+</body>
 </html>
