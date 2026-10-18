@@ -7,7 +7,7 @@ function toggleMenu() {
 function getData(key) {
     try {
         const data = JSON.parse(localStorage.getItem(key));
-        return data ?? [];
+        return Array.isArray(data) ? data : [];
     } catch {
         return [];
     }
@@ -43,7 +43,7 @@ function requireLogin() {
     return true;
 }
 
-async function logout() {
+function logout() {
     localStorage.removeItem("hpLoggedIn");
     window.location.replace("index.html");
 }
@@ -65,22 +65,28 @@ document.addEventListener("DOMContentLoaded", function () {
         "profile.html"
     ];
 
-    if (protectedPages.includes(currentPage) && !requireLogin()) {
-        return;
-    }
+    if (protectedPages.includes(currentPage) && !requireLogin()) return;
 
     const loginForm = document.getElementById("loginForm");
+
     if (loginForm) {
         loginForm.addEventListener("submit", function (event) {
             event.preventDefault();
-            const email = document.getElementById("email").value.trim().toLowerCase();
-            const password = document.getElementById("password").value;
+
+            const email = document.getElementById("email")?.value.trim().toLowerCase() || "";
+            const password = document.getElementById("password")?.value || "";
             const users = getData("happyPawsUsers");
-            const user = users.find(item => String(item.email || "").toLowerCase() === email && item.password === password);
+
+            const user = users.find(item =>
+                String(item.email || "").toLowerCase() === email &&
+                item.password === password
+            );
+
             if (!user) {
                 alert("Login failed. Check your email and password, or create an account first.");
                 return;
             }
+
             localStorage.setItem("currentUserEmail", user.email);
             localStorage.setItem("hpAccount", JSON.stringify({
                 name: user.name || [user.firstName, user.lastName].filter(Boolean).join(" "),
@@ -89,53 +95,80 @@ document.addEventListener("DOMContentLoaded", function () {
                 email: user.email,
                 phone: user.phone || ""
             }));
+
             localStorage.setItem("hpLoggedIn", "true");
             window.location.assign("home.html");
         });
     }
 
     const registerForm = document.getElementById("registerForm");
+
     if (registerForm) {
         registerForm.addEventListener("submit", function (event) {
             event.preventDefault();
-            const fullName = document.getElementById("fullname").value.trim();
-            const email = document.getElementById("regEmail").value.trim().toLowerCase();
-            const password = document.getElementById("regPassword").value;
-            const confirm = document.getElementById("confirmPassword").value;
+
+            const fullName = document.getElementById("fullname")?.value.trim() || "";
+            const email = document.getElementById("regEmail")?.value.trim().toLowerCase() || "";
+            const password = document.getElementById("regPassword")?.value || "";
+            const confirm = document.getElementById("confirmPassword")?.value || "";
+
             if (!fullName || !email || !password || !confirm) {
                 alert("Please complete all fields.");
                 return;
             }
+
             if (password !== confirm) {
                 alert("Passwords do not match.");
                 return;
             }
+
             if (password.length < 6) {
                 alert("Password must be at least 6 characters.");
                 return;
             }
+
             const users = getData("happyPawsUsers");
+
             if (users.some(item => String(item.email || "").toLowerCase() === email)) {
                 alert("This email is already registered. Please log in instead.");
                 return;
             }
+
             const parts = fullName.split(/\s+/);
+
             const user = {
-                id: String(Date.now()), name: fullName,
-                firstName: parts[0] || "", lastName: parts.slice(1).join(" "),
-                email, phone: "", password, owner: {}, pets: [], createdAt: new Date().toISOString()
+                id: String(Date.now()),
+                name: fullName,
+                firstName: parts[0] || "",
+                lastName: parts.slice(1).join(" "),
+                email,
+                phone: "",
+                password,
+                owner: {},
+                pets: [],
+                createdAt: new Date().toISOString()
             };
+
             users.push(user);
             saveData("happyPawsUsers", users);
+
             localStorage.setItem("currentUserEmail", email);
-            localStorage.setItem("hpAccount", JSON.stringify({ name: fullName, firstName: user.firstName, lastName: user.lastName, email, phone: "" }));
+            localStorage.setItem("hpAccount", JSON.stringify({
+                name: fullName,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email,
+                phone: ""
+            }));
+
             localStorage.setItem("hpLoggedIn", "true");
+
             alert("Account created successfully.");
             window.location.assign("home.html");
         });
     }
 
-    document.querySelectorAll("[data-logout]").forEach(function (button) {
+    document.querySelectorAll("[data-logout]").forEach(button => {
         button.addEventListener("click", function (event) {
             event.preventDefault();
             logout();
@@ -148,20 +181,21 @@ document.addEventListener("DOMContentLoaded", function () {
         petForm.addEventListener("submit", function (event) {
             event.preventDefault();
 
+            const account = getAccount() || {};
             const pets = getData("hpPets");
 
             pets.push({
                 id: Date.now(),
-                name: document.getElementById("petName").value.trim(),
-                type: document.getElementById("petType").value,
-                breed: document.getElementById("petBreed").value.trim(),
-                gender: document.getElementById("petGender").value,
-                birth: document.getElementById("petBirth").value,
-                color: document.getElementById("petColor").value.trim(),
-                weight: document.getElementById("petWeight").value,
-                notes: document.getElementById("petNotes").value.trim(),
-                ownerName: (getAccount() || {}).name || "",
-                ownerEmail: (getAccount() || {}).email || ""
+                name: document.getElementById("petName")?.value.trim() || "",
+                type: document.getElementById("petType")?.value || "",
+                breed: document.getElementById("petBreed")?.value.trim() || "",
+                gender: document.getElementById("petGender")?.value || "",
+                birth: document.getElementById("petBirth")?.value || "",
+                color: document.getElementById("petColor")?.value.trim() || "",
+                weight: document.getElementById("petWeight")?.value || "",
+                notes: document.getElementById("petNotes")?.value.trim() || "",
+                ownerName: account.name || "",
+                ownerEmail: account.email || ""
             });
 
             saveData("hpPets", pets);
@@ -173,7 +207,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const petList = document.getElementById("petList");
 
     if (petList) {
-        const pets = getData("hpPets");
+        const account = getAccount() || {};
+        const pets = getData("hpPets").filter(pet =>
+            !pet.ownerEmail || pet.ownerEmail === account.email
+        );
 
         petList.innerHTML = pets.length
             ? pets.map(pet => `
@@ -181,7 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h3>🐾 ${escapeHTML(pet.name)}</h3>
                     <p>${escapeHTML(pet.type)} · ${escapeHTML(pet.breed)}</p>
                     <p>Gender: ${escapeHTML(pet.gender)}</p>
-                    <a class="button-link" href="pet-details.html?id=${pet.id}">View Details</a>
+                    <a class="button-link" href="pet-details.html?id=${encodeURIComponent(pet.id)}">View Details</a>
                 </div>
             `).join("")
             : `<div class="empty">
@@ -195,7 +232,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (petDetails) {
         const id = Number(new URLSearchParams(window.location.search).get("id"));
-        const pet = getData("hpPets").find(item => item.id === id);
+        const account = getAccount() || {};
+        const pet = getData("hpPets").find(item =>
+            Number(item.id) === id &&
+            (!item.ownerEmail || item.ownerEmail === account.email)
+        );
 
         petDetails.innerHTML = pet
             ? `
@@ -207,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <p><b>Color:</b> ${escapeHTML(pet.color)}</p>
                 <p><b>Weight:</b> ${escapeHTML(pet.weight)} kg</p>
                 <p><b>Medical Notes:</b> ${escapeHTML(pet.notes)}</p>
-                <button class="danger" onclick="deletePet(${pet.id})">Delete Pet</button>
+                <button class="danger" onclick="deletePet(${Number(pet.id)})">Delete Pet</button>
             `
             : `<p>Pet not found.</p><a href="pets.html">Back to My Pets</a>`;
     }
@@ -220,12 +261,15 @@ document.addEventListener("DOMContentLoaded", function () {
         if (select) {
             select.innerHTML = '<option value="">Select a pet</option>';
 
-            getData("hpPets").forEach(function (pet) {
-                const option = document.createElement("option");
-                option.value = pet.id;
-                option.textContent = pet.name;
-                select.appendChild(option);
-            });
+            const account = getAccount() || {};
+            getData("hpPets")
+                .filter(pet => !pet.ownerEmail || pet.ownerEmail === account.email)
+                .forEach(pet => {
+                    const option = document.createElement("option");
+                    option.value = pet.id;
+                    option.textContent = pet.name;
+                    select.appendChild(option);
+                });
         }
 
         appointmentForm.addEventListener("submit", function (event) {
@@ -238,23 +282,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const appointments = getData("hpAppointments");
             const pets = getData("hpPets");
-            const pet = pets.find(item => item.id === Number(select.value));
+            const account = getAccount() || {};
+            const pet = pets.find(item =>
+                Number(item.id) === Number(select.value) &&
+                (!item.ownerEmail || item.ownerEmail === account.email)
+            );
 
             if (!pet) {
                 alert("Please add and select a pet first.");
                 return;
             }
 
+            const service = document.getElementById("appointmentService");
+            const date = document.getElementById("appointmentDate");
+            const time = document.getElementById("appointmentTime");
+            const notes = document.getElementById("appointmentNotes");
+
+            if (!service || !date || !time) {
+                alert("Appointment form fields are missing.");
+                return;
+            }
+
             appointments.push({
                 id: Date.now(),
                 pet: pet.name,
-                service: document.getElementById("appointmentService").value,
-                date: document.getElementById("appointmentDate").value,
-                time: document.getElementById("appointmentTime").value,
-                notes: document.getElementById("appointmentNotes").value,
+                petId: pet.id,
+                service: service.value,
+                date: date.value,
+                time: time.value,
+                notes: notes?.value || "",
                 status: "Pending",
-                ownerName: (getAccount() || {}).name || "",
-                ownerEmail: (getAccount() || {}).email || ""
+                ownerName: account.name || "",
+                ownerEmail: account.email || ""
             });
 
             saveData("hpAppointments", appointments);
@@ -266,33 +325,109 @@ document.addEventListener("DOMContentLoaded", function () {
     const appointmentList = document.getElementById("appointmentList");
 
     if (appointmentList) {
-        const appointments = getData("hpAppointments");
+        const account = getAccount() || {};
+        const appointments = getData("hpAppointments").filter(item =>
+            !item.ownerEmail || item.ownerEmail === account.email
+        );
+        const emptyState = document.getElementById("emptyState");
 
-        appointmentList.innerHTML = appointments.length
-            ? `<div class="table-wrap">
-                <table>
-                    <tr>
-                        <th>Pet</th>
-                        <th>Service</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Status</th>
-                    </tr>
-                    ${appointments.map(item => `
-                        <tr>
-                            <td>${escapeHTML(item.pet)}</td>
-                            <td>${escapeHTML(item.service)}</td>
-                            <td>${escapeHTML(item.date)}</td>
-                            <td>${escapeHTML(item.time)}</td>
-                            <td><span class="status">${escapeHTML(item.status)}</span></td>
-                        </tr>
-                    `).join("")}
-                </table>
-            </div>`
-            : `<div class="empty">
-                <p>No appointments yet.</p>
-                <a class="button-link" href="book-appointment.html">Book Appointment</a>
-            </div>`;
+        appointmentList.querySelectorAll(".appointment-card, .table-wrap, .empty").forEach(element => {
+            element.remove();
+        });
+
+        if (appointments.length) {
+            appointments.forEach(item => {
+                const status = item.status || "Pending";
+                const card = document.createElement("div");
+                card.className = "appointment-card";
+                card.dataset.status = status.toLowerCase();
+
+                card.innerHTML = `
+                    <div class="appointment-card-top">
+                        <div class="appointment-icon">📅</div>
+                        <div class="appointment-title">
+                            <h3>${escapeHTML(item.service || "Pet Appointment")}</h3>
+                            <p>For ${escapeHTML(item.pet || "Your Pet")}</p>
+                        </div>
+                        <span class="status-badge" data-status="${escapeHTML(status)}">${escapeHTML(status)}</span>
+                    </div>
+                    <div class="appointment-details">
+                        <div>
+                            <span class="detail-label">Appointment Date</span>
+                            <span class="detail-value">${escapeHTML(item.date || "Not specified")}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label">Appointment Time</span>
+                            <span class="detail-value">${escapeHTML(item.time || "Not specified")}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label">Pet Name</span>
+                            <span class="detail-value">${escapeHTML(item.pet || "Your Pet")}</span>
+                        </div>
+                        <div>
+                            <span class="detail-label">Notes</span>
+                            <span class="detail-value">${escapeHTML(item.notes || "No notes")}</span>
+                        </div>
+                    </div>
+                `;
+
+                appointmentList.insertBefore(card, emptyState || null);
+            });
+
+            if (emptyState) emptyState.style.display = "none";
+        } else if (emptyState) {
+            emptyState.style.display = "block";
+        } else {
+            appointmentList.innerHTML = `
+                <div class="empty">
+                    <p>No appointments yet.</p>
+                    <a class="button-link" href="book-appointment.html">Book Appointment</a>
+                </div>
+            `;
+        }
+
+        const searchInput = document.getElementById("appointmentSearch");
+        const statusFilter = document.getElementById("statusFilter");
+
+        function filterAppointments() {
+            const query = (searchInput?.value || "").trim().toLowerCase();
+            const selectedStatus = (statusFilter?.value || "all").toLowerCase();
+            let visibleCount = 0;
+
+            appointmentList.querySelectorAll(".appointment-card").forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const status = (card.dataset.status || "").toLowerCase();
+                const matchesSearch = text.includes(query);
+                const matchesStatus = selectedStatus === "all" ||
+                    selectedStatus === "all statuses" ||
+                    status === selectedStatus;
+
+                const visible = matchesSearch && matchesStatus;
+                card.style.display = visible ? "" : "none";
+
+                if (visible) visibleCount++;
+            });
+
+            const noResults = document.getElementById("noResults");
+
+            if (noResults) {
+                noResults.style.display = visibleCount === 0 && appointments.length > 0 ? "block" : "none";
+            }
+
+            if (emptyState && appointments.length > 0) {
+                emptyState.style.display = "none";
+            }
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener("input", filterAppointments);
+        }
+
+        if (statusFilter) {
+            statusFilter.addEventListener("change", filterAppointments);
+        }
+
+        filterAppointments();
     }
 
     const profileName = document.getElementById("profileName");
@@ -337,6 +472,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            const account = getAccount() || {};
             const consultations = getData("hpConsultations");
 
             consultations.push({
@@ -346,8 +482,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 diagnosis: concernInput.value,
                 date: new Date().toISOString().slice(0, 10),
                 status: "Pending",
-                ownerName: (getAccount() || {}).name || "",
-                ownerEmail: (getAccount() || {}).email || ""
+                ownerName: account.name || "",
+                ownerEmail: account.email || ""
             });
 
             saveData("hpConsultations", consultations);
@@ -359,11 +495,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const consultationList = document.getElementById("consultationList");
 
     if (consultationList) {
-        consultationList.innerHTML = getData("hpConsultations").map(item => `
+        const account = getAccount() || {};
+        const consultations = getData("hpConsultations").filter(item =>
+            !item.ownerEmail || item.ownerEmail === account.email
+        );
+
+        consultationList.innerHTML = consultations.map(item => `
             <div class="pet-card">
                 <h3>${escapeHTML(item.pet)}</h3>
                 <p>${escapeHTML(item.concern)}</p>
                 <p>${escapeHTML(item.date)}</p>
+                <span class="status">${escapeHTML(item.status || "Pending")}</span>
             </div>
         `).join("") || "<p>No consultation requests yet.</p>";
     }
@@ -371,21 +513,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const notificationList = document.getElementById("notificationList");
 
     if (notificationList) {
-        notificationList.innerHTML = getData("hpAppointments").map(item => `
+        const account = getAccount() || {};
+        const appointments = getData("hpAppointments").filter(item =>
+            !item.ownerEmail || item.ownerEmail === account.email
+        );
+
+        notificationList.innerHTML = appointments.map(item => `
             <div class="pet-card">
                 <h3>📅 Appointment Request</h3>
                 <p>${escapeHTML(item.pet)} — ${escapeHTML(item.service)}</p>
                 <p>${escapeHTML(item.date)} at ${escapeHTML(item.time)}</p>
-                <span class="status">${escapeHTML(item.status)}</span>
+                <span class="status">${escapeHTML(item.status || "Pending")}</span>
             </div>
         `).join("") || "<p>No notifications yet.</p>";
     }
 
     const serviceList = document.getElementById("serviceList");
+
     if (serviceList) {
         const services = getData("hpServices").filter(service =>
             String(service.status || "Available").toLowerCase() === "available"
         );
+
         if (services.length) {
             serviceList.innerHTML = services.map(service => `
                 <div class="dashboard-card">
@@ -402,7 +551,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const healthPet = document.getElementById("healthPet");
 
     if (healthPet) {
-        healthPet.innerHTML = getData("hpPets").map(pet => `
+        const account = getAccount() || {};
+        const pets = getData("hpPets").filter(pet =>
+            !pet.ownerEmail || pet.ownerEmail === account.email
+        );
+
+        healthPet.innerHTML = pets.map(pet => `
             <div class="pet-card">
                 <h3>🐾 ${escapeHTML(pet.name)}</h3>
                 <p>${escapeHTML(pet.notes || "No medical notes recorded.")}</p>
@@ -415,9 +569,14 @@ document.addEventListener("DOMContentLoaded", function () {
 function deletePet(id) {
     if (!confirm("Delete this pet?")) return;
 
+    const account = getAccount() || {};
+
     saveData(
         "hpPets",
-        getData("hpPets").filter(pet => pet.id !== id)
+        getData("hpPets").filter(pet =>
+            !(Number(pet.id) === Number(id) &&
+            (!pet.ownerEmail || pet.ownerEmail === account.email))
+        )
     );
 
     window.location.assign("pets.html");
